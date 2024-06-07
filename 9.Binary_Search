@@ -1,6 +1,6 @@
 //9.Binary_Search
 //The code is written in C
-//Don't just copy paste the code
+
 
 #include <stdio.h>
 int binary_search(int arr[], int n, int target) {
