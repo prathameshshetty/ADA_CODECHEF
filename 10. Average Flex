@@ -1,0 +1,88 @@
+// 10. Average Flex
+//The below code is written in C++
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+int upper_bound(int arr[],int n,int x)
+{
+    int low=0,high=n-1,ans=n;
+    
+    while(low<=high)
+    {
+        int mid=(low+high)/2;
+        
+        if(arr[mid] > x)
+        {
+            ans=mid;
+            high=mid-1;
+        }
+        else{
+            low=mid+1;
+        }
+    }
+    
+    return ans;
+}
+int lower_bound(int arr[],int n,int x)
+{
+    int low=0,high=0,ans=n;
+    
+    while(low<=high)
+    {
+        int mid=(low+high)/2;
+        if(arr[mid]>=x)
+        {
+            ans=mid;
+            high=mid-1;
+        }
+        else{
+            low=mid+1;
+        }
+    }
+    
+    return ans;
+}
+
+int scoreLessEq(int arr[],int n,int target)
+{
+    int ans=upper_bound(arr,n,target);
+    return ans;
+}
+
+int scoreGreat(int arr[],int n,int target)
+{
+    int ans=upper_bound(arr,n,target);
+    return n-ans;
+}
+int main() {
+	// your code goes here
+	int T;
+	cin>>T;
+	while(T--)
+	{
+	    int N;
+	    cin>>N;
+	    int arr[N];
+	    for(int i=0;i<N;i++)
+	    {
+	        cin>>arr[i];
+	    }
+	    
+	    sort(arr,arr+N);
+	    
+	    int cnt=0;
+	    for(int i=0;i<N;i++)
+	    {
+	        if(scoreLessEq(arr,N,arr[i]) > scoreGreat(arr,N,arr[i]))
+	        {
+	            cnt++;
+	        }
+	    }
+	    
+	    cout<<cnt<<"\n";
+	}
+
+}
