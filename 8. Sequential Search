@@ -1,6 +1,5 @@
 // 8.Sequential Search
 //Code is written in C
-//Just copy paste the code
 
 #include <stdio.h>
 // Function to search for an element in the array
