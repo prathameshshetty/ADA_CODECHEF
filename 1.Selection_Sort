@@ -1,6 +1,5 @@
 // 1. Selection sort
 //The above code is written in C.
-//Just copy paste it completly
 
 
 #include <stdio.h>
