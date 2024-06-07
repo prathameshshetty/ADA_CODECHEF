@@ -1,7 +1,5 @@
 //4.Merging_Two_Sorted_Array
 //Code is in C
-//Just copy the code
-
 
 #include <stdio.h>
 void merge(int a[], int size_a, int b[], int size_b, int c[]) {
