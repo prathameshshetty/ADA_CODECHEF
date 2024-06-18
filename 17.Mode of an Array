@@ -1,0 +1,50 @@
+// 17.Mode of an Array
+// The below code is writtwn in C.
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+int compare(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
+int mode(int *arr, int n) {
+    qsort(arr, n, sizeof(int), compare);
+    
+    int curMod = arr[0];
+    int cnt = 0;
+    int maxCnt = INT_MIN;
+    
+    for (int i = 0; i < n; i++) {
+        if (arr[i] == curMod) cnt++;
+        else cnt = 1;
+        if (cnt > maxCnt) {
+            curMod = arr[i];
+            maxCnt = cnt;
+        }
+    }
+    return curMod;
+}
+int main() {
+    int T;
+    scanf("%d", &T);
+    while (T--) {
+        int N;
+        scanf("%d", &N);
+        int *arr = (int *)malloc(N * sizeof(int));
+        for (int i = 0; i < N; i++) {
+            scanf("%d", &arr[i]);
+        }
+        
+        printf("%d\n", mode(arr, N));
+        
+        free(arr);
+    }
+    return 0;
+}
+
+
+
+
+
