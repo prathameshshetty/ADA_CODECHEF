@@ -1,0 +1,101 @@
+// 23.Heapsort
+//The code is written in C
+
+
+#include <stdio.h>
+#include <stdlib.h>
+struct MinHeap {
+    int* arr;
+    int last_index;
+};
+// Function to create a min-heap with size n
+struct MinHeap* createMinHeap(int n) {
+    struct MinHeap* hp = (struct MinHeap*) malloc(sizeof(struct MinHeap));
+    hp->arr = (int*) malloc((n + 1) * sizeof(int));
+    hp->last_index = 1;
+    return hp;
+}
+// Function to insert a value into the min-heap
+void insert(struct MinHeap* hp, int value) {
+    int idx = hp->last_index;
+    hp->arr[hp->last_index++] = value;
+    while (idx > 1) {
+        if (hp->arr[idx / 2] > hp->arr[idx]) {
+            int temp = hp->arr[idx / 2];
+            hp->arr[idx / 2] = hp->arr[idx];
+            hp->arr[idx] = temp;
+            idx = idx / 2;
+        } else {
+            break;
+        }
+    }
+}
+// Function to get the top value of the min-heap
+int top(struct MinHeap* hp) {
+    if (hp->last_index == 1) {
+        return -1;
+    }
+    return hp->arr[1];
+}
+
+// Function to remove the top value from the min-heap
+void pop(struct MinHeap* hp) {
+    if (hp->last_index == 1) {
+        printf("Heap Empty, cannot pop\n");
+        return;
+    }
+    hp->arr[1] = hp->arr[--hp->last_index];
+    int idx = 1;
+    while (idx <= hp->last_index) {
+        int left = 2 * idx;
+        int right = 2 * idx + 1;
+        int smallest = idx;
+        if (left <= hp->last_index && hp->arr[left] < hp->arr[smallest])
+            smallest = left;
+        if (right <= hp->last_index && hp->arr[right] < hp->arr[smallest])
+            smallest = right;
+        if (smallest == idx) {
+            break;
+        }
+        int temp = hp->arr[smallest];
+        hp->arr[smallest] = hp->arr[idx];
+        hp->arr[idx] = temp;
+        idx = smallest;
+    }
+}
+
+// Heapsort function to sort the array
+void Heapsort(int arr[], int n) {
+    struct MinHeap* hp = createMinHeap(n); // Create a min-heap of size n
+    for (int i = 0; i < n; i++) {
+        insert(hp, arr[i]); // Insert each element of the array into the heap
+    }
+    for (int i = 0; i < n; i++) {
+        arr[i] = top(hp); // Get the smallest element
+        pop(hp); // Remove the smallest element
+    }
+    free(hp->arr); // Free the memory allocated for the heap array
+    free(hp); // Free the memory allocated for the heap structure
+}
+
+// Main function to read input, sort the array, and print the result
+int main() {
+    int n;
+    scanf("%d", &n); // Read the number of elements
+    int arr[n];
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]); // Read the elements
+    }
+
+    Heapsort(arr, n); // Sort the array
+
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]); // Print the sorted array
+    }
+    printf("\n");
+
+    return 0;
+}
+
+
+
