@@ -1,0 +1,176 @@
+// 22.Implement TreeMap
+// The below code is written in C
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Define the structure for a Node
+struct Node {
+    int val;
+    char name[11]; // to store names up to length 10
+    struct Node* left;
+    struct Node* right;
+    int height; // Store height to keep AVL balanced
+};
+
+// Function to create a new node
+struct Node* createNode(int val, char* name) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->val = val;
+    strcpy(node->name, name);
+    node->height = 1; // Every node has height = 1 initially
+    node->left = NULL;
+    node->right = NULL;
+    return node;
+}
+
+// Function to get the height of a node
+int getHeight(struct Node* node) {
+    if (node == NULL) {
+        return 0; // Height of a NULL node is 0
+    }
+    return node->height;
+}
+
+// Function to calculate the height of a node
+int calculateHeight(struct Node* node) {
+    return 1 + (getHeight(node->left) > getHeight(node->right) ? getHeight(node->left) : getHeight(node->right));
+}
+
+// Function to perform right rotation
+struct Node* rightRotate(struct Node* node) {
+    struct Node* temp = node->left;
+    struct Node* temp2 = node->left->right;
+
+    // Rotate the nodes
+    temp->right = node;
+    node->left = temp2;
+
+    // Recalculate height
+    node->height = calculateHeight(node);
+    temp->height = calculateHeight(temp);
+
+    return temp;
+}
+
+// Function to perform left rotation
+struct Node* leftRotate(struct Node* node) {
+    struct Node* temp = node->right;
+    struct Node* temp2 = node->right->left;
+
+    // Rotate the nodes
+    temp->left = node;
+    node->right = temp2;
+
+    // Recalculate height
+    node->height = calculateHeight(node);
+    temp->height = calculateHeight(temp);
+
+    return temp;
+}
+
+// Function to get the height difference
+int heightDifference(struct Node* node) {
+    return getHeight(node->left) - getHeight(node->right);
+}
+
+// Function to insert a node in the AVL tree
+struct Node* insert(struct Node* root, int id, char* name) {
+    if (root == NULL) {
+        // At this place a node with value id should exist, but it doesn't
+        return createNode(id, name); // Return the newly created node
+    }
+    if (root->val < id) {
+        // Insert the node into the right subtree
+        root->right = insert(root->right, id, name);
+    } else if (root->val > id) {
+        // Insert the node into the left subtree
+        root->left = insert(root->left, id, name);
+    } else {
+        // Update the name if the id already exists
+        strcpy(root->name, name);
+        return root;
+    }
+
+    root->height = calculateHeight(root);
+    int height_diff = heightDifference(root);
+
+    // Left Left case
+    if (height_diff > 1 && id < root->left->val) {
+        return rightRotate(root);
+    }
+
+    // Left Right case
+    if (height_diff > 1 && id > root->left->val) {
+        root->left = leftRotate(root->left); // Convert into Left Left case
+        return rightRotate(root);
+    }
+
+    // Right Right case
+    if (height_diff < -1 && id > root->right->val) {
+        return leftRotate(root);
+    }
+
+    // Right Left case
+    if (height_diff < -1 && id < root->right->val) {
+        root->right = leftRotate(root->right); // Convert into Right Right case
+        return rightRotate(root);
+    }
+
+    // Return if the tree is already balanced
+    return root;
+}
+
+// Function to search for a node in the AVL tree and get the associated name
+char* search(struct Node* root, int id) {
+    if (root == NULL) { // If the node does not exist then return NULL
+        return NULL;
+    }
+    if (root->val == id) {
+        return root->name;
+    }
+    if (root->val < id) {
+        return search(root->right, id);
+    }
+    return search(root->left, id);
+}
+
+int main() {
+    int q;
+    scanf("%d", &q);
+
+    struct Node* root = NULL;
+
+    for (int i = 0; i < q; i++) {
+        int type, id;
+        char name[11];
+        scanf("%d", &type);
+        if (type == 1) {
+            scanf("%d %s", &id, name);
+            root = insert(root, id, name);
+        } else if (type == 2) {
+            scanf("%d", &id);
+            char* result = search(root, id);
+            if (result) {
+                printf("%s\n", result);
+            } else {
+                printf("-1\n");
+            }
+        }
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
