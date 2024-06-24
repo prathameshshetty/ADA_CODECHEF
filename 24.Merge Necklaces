@@ -1,0 +1,107 @@
+// 24.Merge Necklaces
+// The below code is written in C.
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct MinHeap {
+    int* arr;
+    int last_index;
+};
+
+// Function to create a min-heap with size n
+struct MinHeap* createMinHeap(int n) {
+    struct MinHeap* hp = (struct MinHeap*) malloc(sizeof(struct MinHeap));
+    hp->arr = (int*) malloc((n + 1) * sizeof(int));
+    hp->last_index = 1;
+    return hp;
+}
+
+// Function to insert a value into the min-heap
+void insert(struct MinHeap* hp, int value) {
+    int idx = hp->last_index;
+    hp->arr[hp->last_index++] = value;
+    while (idx > 1) {
+        if (hp->arr[idx / 2] > hp->arr[idx]) {
+            int temp = hp->arr[idx / 2];
+            hp->arr[idx / 2] = hp->arr[idx];
+            hp->arr[idx] = temp;
+            idx = idx / 2;
+        } else {
+            break;
+        }
+    }
+}
+
+// Function to get the top value of the min-heap
+int top(struct MinHeap* hp) {
+    if (hp->last_index == 1) {
+        return -1;
+    }
+    return hp->arr[1];
+}
+
+// Function to remove the top value from the min-heap
+void pop(struct MinHeap* hp) {
+    if (hp->last_index == 1) {
+        printf("Heap Empty, cannot pop\n");
+        return;
+    }
+    hp->arr[1] = hp->arr[--hp->last_index];
+    int idx = 1;
+    while (idx < hp->last_index) {
+        int left = 2 * idx;
+        int right = 2 * idx + 1;
+        int smallest = idx;
+        if (left < hp->last_index && hp->arr[left] < hp->arr[smallest])
+            smallest = left;
+        if (right < hp->last_index && hp->arr[right] < hp->arr[smallest])
+            smallest = right;
+        if (smallest == idx) {
+            break;
+        }
+        int temp = hp->arr[smallest];
+        hp->arr[smallest] = hp->arr[idx];
+        hp->arr[idx] = temp;
+        idx = smallest;
+    }
+}
+
+// Function to merge necklaces and calculate the minimum cost
+int merge_necklaces(int A[], int n) {
+    struct MinHeap* heap = createMinHeap(n);
+    for (int i = 0; i < n; i++) {
+        insert(heap, A[i]);
+    }
+
+    int total_cost = 0;
+    while (heap->last_index > 2) {
+        int first = top(heap); pop(heap);
+        int second = top(heap); pop(heap);
+        int cost = first + second;
+        total_cost += cost;
+        insert(heap, cost);
+    }
+
+    free(heap->arr);
+    free(heap);
+    return total_cost;
+}
+
+int main() {
+    int T;
+    scanf("%d", &T);
+
+    while (T--) {
+        int N;
+        scanf("%d", &N);
+        int A[N];
+        for (int i = 0; i < N; i++) {
+            scanf("%d", &A[i]);
+        }
+        printf("%d\n", merge_necklaces(A, N));
+    }
+
+    return 0;
+}
