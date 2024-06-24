@@ -1,0 +1,78 @@
+// 20.Insertion in BST
+// The below code is written in C.
+
+
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+struct Node {
+    int val;
+    struct Node* left;
+    struct Node* right;
+};
+struct Node* Insert(struct Node* root, int x) {
+    if(root == NULL) { 
+        // At this place a node with value x should exist, but it doesn't
+        struct Node* temp =(struct Node*)malloc(sizeof(struct Node)); // Allocate memory //for a new node
+        temp -> val = x; // Set the value of the new node
+        temp -> left = NULL; // Set the left child of the new node
+        temp -> right = NULL; // Set the right child of the new node
+
+        return temp; // Return the newly created node
+    }
+
+    if(root -> val == x) {
+        // Value already exists
+        // No insertion, return the root
+        return root;
+    }
+    if(root -> val < x) {
+        // Insert the node into the right subtree
+        root -> right = Insert(root -> right, x);
+
+        return root; // Return the root
+    } 
+     // Insert the node into the left subtree
+    root -> left = Insert(root -> left, x);
+    return root; // Return the root
+}
+
+int Search(struct Node* root, int x) {
+    if(root == NULL) { // If the node does not exist then return 0
+        return 0;
+    }
+    if(root -> val == x) {
+        return 1; // Return 1
+    }
+    if(root -> val < x) {
+        return Search(root->right,x); // Recursively search in the right subtree
+    }
+    return Search(root->left,x); // Recursively search in the left subtree
+}
+int main() {
+    int n; 
+    scanf("%d", &n);
+    int a[n];
+    for(int i = 0; i < n; i++) {
+        scanf("%d", &a[i]);
+    }
+    // Creating an empty tree
+    struct Node* root = NULL;
+
+    for(int i = 0; i < n; i++) {
+        root = Insert(root, a[i]);
+    }
+    for(int i = 0; i < n; i++) {
+        printf("%d\n", Search(root, a[i]));
+    }
+    return 0;
+}
+
+
+
+
+
+
+
