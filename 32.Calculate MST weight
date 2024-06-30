@@ -1,0 +1,75 @@
+32.Calculate MST weight
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+struct Edge {
+    int u, v;
+    long long w;
+    Edge(int u, int v, long long w) : u(u), v(v), w(w) {}
+};
+
+struct DisjointSet {
+    vector<int> parent, rank;
+    
+    DisjointSet(int n) : parent(n), rank(n, 0) {
+        for (int i = 0; i < n; i++) parent[i] = i;
+    }
+    
+    int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]);
+        return parent[x];
+    }
+    
+    void unite(int x, int y) {
+        int px = find(x), py = find(y);
+        if (px == py) return;
+        if (rank[px] < rank[py]) parent[px] = py;
+        else if (rank[px] > rank[py]) parent[py] = px;
+        else {
+            parent[py] = px;
+            rank[px]++;
+        }
+    }
+};
+
+long long kruskalMST(int N, vector<Edge>& edges) {
+    sort(edges.begin(), edges.end(), [](const Edge& a, const Edge& b) {
+        return a.w < b.w;
+    });
+    
+    DisjointSet ds(N);
+    long long mst_weight = 0;
+    int edges_taken = 0;
+    
+    for (const Edge& e : edges) {
+        if (ds.find(e.u) != ds.find(e.v)) {
+            ds.unite(e.u, e.v);
+            mst_weight += e.w;
+            edges_taken++;
+            if (edges_taken == N - 1) break;
+        }
+    }
+    
+    return mst_weight;
+}
+
+int main() {
+    int N, M;
+    cin >> N >> M;
+    
+    vector<Edge> edges;
+    for (int i = 0; i < M; i++) {
+        int u, v;
+        long long w;
+        cin >> u >> v >> w;
+        edges.emplace_back(u-1, v-1, w);  // 0-based indexing
+    }
+    
+    cout << kruskalMST(N, edges) << endl;
+    
+    return 0;
+}
