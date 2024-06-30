@@ -1,0 +1,45 @@
+//29.Longest Palindromic Subsequence
+
+
+#include<bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+// Function to compute the length of the longest palindromic subsequence
+int longestPalindromicSubsequence(const string& S) {
+    int n = S.length();
+    string reversedS = S;
+    reverse(reversedS.begin(), reversedS.end());
+
+    // Create a 2D table to store lengths of longest common subsequence
+    vector<vector<int>> dp(n + 1, vector<int>(n + 1, 0));
+
+    // Fill the dp table using the LCS approach with S and reversedS
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= n; ++j) {
+            if (S[i - 1] == reversedS[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+
+    // The length of the longest palindromic subsequence is in dp[n][n]
+    return dp[n][n];
+}
+
+int main() {
+    string S;
+
+    // Read input
+    cin >> S;
+
+    // Compute and output the length of the longest palindromic subsequence
+    cout << longestPalindromicSubsequence(S) << endl;
+
+    return 0;
+}
