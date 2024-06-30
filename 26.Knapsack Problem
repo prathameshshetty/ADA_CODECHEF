@@ -1,0 +1,44 @@
+//26.Knapsack Problem
+
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+// Function to solve the Knapsack problem using dynamic programming
+int knapsack(int N, int Wmax, vector<int> &weights, vector<int> &values) {
+    // Create a 2D DP array
+    vector<vector<int>> dp(N + 1, vector<int>(Wmax + 1, 0));
+
+    // Fill the DP array
+    for (int i = 1; i <= N; ++i) {
+        for (int w = 0; w <= Wmax; ++w) {
+            if (weights[i - 1] <= w) {
+                dp[i][w] = max(dp[i - 1][w], dp[i - 1][w - weights[i - 1]] + values[i - 1]);
+            } else {
+                dp[i][w] = dp[i - 1][w];
+            }
+        }
+    }
+
+    // The maximum value that can be carried in the knapsack of capacity Wmax
+    return dp[N][Wmax];
+}
+
+int main() {
+    int N, Wmax;
+    cin >> N >> Wmax;
+
+    vector<int> weights(N), values(N);
+
+    for (int i = 0; i < N; ++i) {
+        cin >> weights[i] >> values[i];
+    }
+
+    int max_value = knapsack(N, Wmax, weights, values);
+    cout << max_value << endl;
+
+    return 0;
+}
